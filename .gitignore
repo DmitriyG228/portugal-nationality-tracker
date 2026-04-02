@@ -1,0 +1,5 @@
+# Private files — not for public page
+mission-*.md
+reference-*.md
+sources/
+.DS_Store

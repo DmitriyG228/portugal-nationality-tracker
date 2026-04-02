@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portugal Nationality Law Tracker</title>
+  <meta name="description" content="Track the status of Portugal's new nationality law (Lei da Nacionalidade) from parliamentary vote to enforcement. Updated daily.">
+  <meta property="og:title" content="Portugal Nationality Law Tracker">
+  <meta property="og:description" content="Live tracker: when will Portugal's new nationality law take effect? Pipeline status, probability estimates, key signals.">
+  <meta property="og:type" content="website">
+  <style>
+    :root {
+      --bg: #fafafa;
+      --card: #ffffff;
+      --text: #1a1a2e;
+      --muted: #64748b;
+      --accent: #2563eb;
+      --green: #16a34a;
+      --red: #dc2626;
+      --amber: #d97706;
+      --border: #e2e8f0;
+      --code-bg: #f1f5f9;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --card: #1e293b;
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --accent: #60a5fa;
+        --green: #4ade80;
+        --red: #f87171;
+        --amber: #fbbf24;
+        --border: #334155;
+        --code-bg: #1e293b;
+      }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 0 4rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    h1 span { color: var(--accent); }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .updated {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      background: var(--code-bg);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .status-grid { grid-template-columns: 1fr; }
+    }
+
+    .status-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .status-card .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .status-card .value {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .status-card.wide {
+      grid-column: 1 / -1;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge-no { background: rgba(220, 38, 38, 0.12); color: var(--red); }
+    .badge-yes { background: rgba(22, 163, 74, 0.12); color: var(--green); }
+    .badge-wait { background: rgba(217, 119, 6, 0.12); color: var(--amber); }
+    .badge-done { background: rgba(37, 99, 235, 0.12); color: var(--accent); }
+
+    .hero-status {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-status .stage {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--amber);
+    }
+
+    .hero-status .detail {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1rem 0;
+      background: var(--card);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    thead { background: var(--code-bg); }
+
+    th {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.6rem 0.75rem;
+      border-top: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tr:hover td { background: var(--code-bg); }
+
+    .prob-bar-container {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 0.25rem;
+    }
+
+    .prob-bar {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .scenario-row td:first-child { font-weight: 600; }
+
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+      margin: 1rem 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.6rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding: 0.5rem 0 1rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -1.65rem;
+      top: 0.7rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--bg);
+    }
+
+    .timeline-item.done::before {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .timeline-item.active::before {
+      background: var(--amber);
+      border-color: var(--amber);
+      box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.2);
+    }
+
+    .timeline-item .step-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .timeline-item .step-detail {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .timeline-item .step-status {
+      font-size: 0.8rem;
+      margin-top: 0.15rem;
+    }
+
+    .signal-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin: 0.5rem 0;
+    }
+
+    .signal-card .signal-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .signal-card .signal-meaning {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .signal-card a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.8rem;
+    }
+
+    .signal-card a:hover { text-decoration: underline; }
+
+    .source-list {
+      list-style: none;
+      margin: 1rem 0;
+    }
+
+    .source-list li {
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+
+    .source-list li:last-child { border-bottom: none; }
+
+    .source-list a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .source-list a:hover { text-decoration: underline; }
+
+    .source-list .source-desc {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .note {
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .note.warning {
+      border-left-color: var(--amber);
+    }
+
+    .changes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    @media (max-width: 600px) {
+      .changes-grid { grid-template-columns: 1fr; }
+    }
+
+    .change-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .change-card .change-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .change-card .old-new {
+      font-size: 0.82rem;
+    }
+
+    .change-card .old { color: var(--red); }
+    .change-card .new { color: var(--green); font-weight: 600; }
+
+    .methodology {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .update-log-entry {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin: 0.5rem 0;
+    }
+
+    .update-log-entry .log-date {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+
+    .update-log-entry .log-text {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+    }
+
+    .update-log-entry .log-shift {
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    .cumulative-chart {
+      display: flex;
+      align-items: end;
+      gap: 2px;
+      height: 120px;
+      margin: 1rem 0;
+      padding: 0 0 1.5rem;
+      position: relative;
+    }
+
+    .chart-bar-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .chart-bar {
+      width: 100%;
+      background: var(--accent);
+      border-radius: 3px 3px 0 0;
+      opacity: 0.7;
+      min-height: 2px;
+    }
+
+    .chart-label {
+      font-size: 0.6rem;
+      color: var(--muted);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      margin-top: 0.25rem;
+      position: absolute;
+      bottom: 0;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 600px) {
+      .chart-label { font-size: 0.5rem; }
+    }
+
+    .disclaimer {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <h1>Portugal <span>Nationality Law</span> Tracker</h1>
+      <p class="subtitle">When will the new Lei da Nacionalidade take effect?</p>
+      <span class="updated">Last updated: 3 April 2026</span>
+    </header>
+
+    <!-- HERO STATUS -->
+    <div class="hero-status">
+      <div class="stage">Redacao Final</div>
+      <div class="detail">Parliament administrative services are finalizing the decree text. Not yet delivered to the President.</div>
+    </div>
+
+    <!-- QUICK STATUS -->
+    <div class="status-grid">
+      <div class="status-card">
+        <div class="label">Parliamentary Vote</div>
+        <div class="value"><span class="badge badge-done">DONE</span> 1 Apr 2026</div>
+      </div>
+      <div class="status-card">
+        <div class="label">Vote Result</div>
+        <div class="value">152&ndash;64&ndash;1</div>
+      </div>
+      <div class="status-card">
+        <div class="label">Decree at Belem?</div>
+        <div class="value"><span class="badge badge-no">NO</span> Not yet delivered</div>
+      </div>
+      <div class="status-card">
+        <div class="label">President's Clock Started?</div>
+        <div class="value"><span class="badge badge-no">NO</span> Starts on receipt</div>
+      </div>
+      <div class="status-card">
+        <div class="label">PS Fiscalizacao Filed?</div>
+        <div class="value"><span class="badge badge-no">NO</span> <span style="font-size:0.8rem;color:var(--muted)">PS says nationality law issues "resolved"</span></div>
+      </div>
+      <div class="status-card">
+        <div class="label">Law in Force?</div>
+        <div class="value"><span class="badge badge-no">NO</span></div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Two separate decrees.</strong> Parliament approved two decrees: (1) the Nationality Law revision (residency requirements, etc.) and (2) a Penal Code amendment (loss of nationality as criminal penalty). PS says the nationality law's constitutional issues are "resolved" and is only evaluating a TC challenge on the Penal Code decree. The nationality law can proceed independently.
+    </div>
+
+    <!-- PIPELINE -->
+    <h2>Pipeline to Enforcement</h2>
+
+    <div class="timeline">
+      <div class="timeline-item done">
+        <div class="step-title">1. Vote in Plenary</div>
+        <div class="step-detail">Parliament &middot; Art. 279 n.&ordm; 2 CRP</div>
+        <div class="step-status"><span class="badge badge-done">DONE</span> 1 Apr 2026 &mdash; 152&ndash;64&ndash;1 (PSD+Chega+IL+CDS vs PS+Livre+PCP+BE+PAN+JPP)</div>
+      </div>
+      <div class="timeline-item active">
+        <div class="step-title">2. Redacao Final</div>
+        <div class="step-detail">Parliament services finalize decree text &middot; Regimento AR &middot; ~5&ndash;14 days</div>
+        <div class="step-status"><span class="badge badge-wait">IN PROGRESS</span> Expected ~4&ndash;15 Apr (precedent: 14 days in Oct 2025 round)</div>
+      </div>
+      <div class="timeline-item">
+        <div class="step-title">3. Decree Sent to Belem</div>
+        <div class="step-detail">Parliament &rarr; President &middot; Art. 279 n.&ordm; 2 CRP &middot; 1 day</div>
+        <div class="step-status"><span class="badge badge-wait">WAITING</span></div>
+      </div>
+      <div class="timeline-item">
+        <div class="step-title">4a. PS Requests Fiscalizacao Preventiva?</div>
+        <div class="step-detail">&ge;46 PS deputies &middot; Art. 278 n.&ordm; 2 CRP &middot; 8 days from receipt</div>
+        <div class="step-status"><span class="badge badge-no">UNLIKELY</span> PS says nationality law issues "resolved"; may file only on Penal Code decree</div>
+      </div>
+      <div class="timeline-item">
+        <div class="step-title">4b. President Seguro Requests Fiscalizacao?</div>
+        <div class="step-detail">Art. 278 n.&ordm; 1 CRP &middot; 8 days from receipt</div>
+        <div class="step-status">UNKNOWN &mdash; Seguro is PS-affiliated; unlikely to contradict party's assessment</div>
+      </div>
+      <div class="timeline-item">
+        <div class="step-title">5a. If No Fiscalizacao: Promulgation or Veto</div>
+        <div class="step-detail">President &middot; Art. 136/279 CRP &middot; 20 days from receipt</div>
+      </div>
+      <div class="timeline-item">
+        <div class="step-title">5b. If Fiscalizacao: TC Reviews</div>
+        <div class="step-detail">Constitutional Court (13 judges) &middot; Art. 278 n.&ordm; 8 CRP &middot; 25 days</div>
+      </div>
+      <div class="timeline-item">
+        <div class="step-title">6. Promulgation or Back to Parliament</div>
+        <div class="step-detail">If TC approves &rarr; President must promulgate. If TC rejects &rarr; back to Parliament (months).</div>
+      </div>
+      <div class="timeline-item">
+        <div class="step-title">7. Published in Diario da Republica</div>
+        <div class="step-detail">Imprensa Nacional &middot; 1 day</div>
+      </div>
+      <div class="timeline-item">
+        <div class="step-title">8. Law in Force</div>
+        <div class="step-detail">Art. 5 CC &mdash; next day after DR publication (unless law specifies otherwise)</div>
+      </div>
+    </div>
+
+    <!-- PROBABILITY -->
+    <h2>Scenario Analysis</h2>
+
+    <p class="methodology">Based on constitutional procedure timelines, precedent from the Oct 2025 round (14 days redacao final), President Seguro's political alignment (PS), and PS post-vote statements. Rev 2, 3 Apr 2026.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>Path</th>
+          <th style="text-align:right">Prob.</th>
+          <th>Law in Force</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="scenario-row">
+          <td>S1: Lightning</td>
+          <td>Redacao final 2d &rarr; Seguro promulgates immediately</td>
+          <td style="text-align:right">5%</td>
+          <td>~7&ndash;8 Apr</td>
+        </tr>
+        <tr class="scenario-row">
+          <td>S2: Fast, no TC</td>
+          <td>Redacao final 5&ndash;7d &rarr; Seguro promulgates within 20d</td>
+          <td style="text-align:right">25%</td>
+          <td>~19&ndash;25 Apr</td>
+        </tr>
+        <tr class="scenario-row">
+          <td>S3: Normal, no TC</td>
+          <td>Redacao final ~14d &rarr; Seguro promulgates</td>
+          <td style="text-align:right">25%</td>
+          <td>~1&ndash;6 May</td>
+        </tr>
+        <tr class="scenario-row">
+          <td>S4: TC review, approved</td>
+          <td>Seguro refers to TC &rarr; TC approves within 25d</td>
+          <td style="text-align:right">12%</td>
+          <td>~mid-May to early Jun</td>
+        </tr>
+        <tr class="scenario-row">
+          <td>S5: TC partial reject</td>
+          <td>TC rejects some norms &rarr; President promulgates remainder</td>
+          <td style="text-align:right">5%</td>
+          <td>~late May to Jun</td>
+        </tr>
+        <tr class="scenario-row">
+          <td>S6: TC full reject</td>
+          <td>TC rejects key norms &rarr; new round in Parliament</td>
+          <td style="text-align:right">3%</td>
+          <td>Autumn 2026+</td>
+        </tr>
+        <tr class="scenario-row">
+          <td>S7: Political veto &rarr; override</td>
+          <td>Seguro vetoes &rarr; Parliament overrides (152 &gt; 116 absolute majority)</td>
+          <td style="text-align:right">15%</td>
+          <td>~mid-May to Jun</td>
+        </tr>
+        <tr class="scenario-row">
+          <td>S8: PS reversal</td>
+          <td>PS files fiscalizacao despite saying issues "resolved"</td>
+          <td style="text-align:right">2%</td>
+          <td>Late 2026</td>
+        </tr>
+        <tr class="scenario-row">
+          <td>S9: Seguro delays</td>
+          <td>Uses full 20d, waits for PS decision on Penal Code</td>
+          <td style="text-align:right">8%</td>
+          <td>~mid-May</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Cumulative Probability: Law in Force by Date</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th style="text-align:right">Cumulative %</th>
+          <th style="text-align:right">Window</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>8 Apr 2026</td><td style="text-align:right">5%</td><td style="text-align:right">5%</td><td>Only if lightning promulgation</td></tr>
+        <tr><td>15 Apr 2026</td><td style="text-align:right">8%</td><td style="text-align:right">3%</td><td>Redacao final likely not done</td></tr>
+        <tr><td>21 Apr 2026</td><td style="text-align:right">22%</td><td style="text-align:right">14%</td><td>S2 partial &mdash; no PS TC block expected</td></tr>
+        <tr><td>25 Apr 2026</td><td style="text-align:right">30%</td><td style="text-align:right">8%</td><td>S2 complete</td></tr>
+        <tr><td>1 May 2026</td><td style="text-align:right">45%</td><td style="text-align:right">15%</td><td>S2+S3 partial</td></tr>
+        <tr><td>6 May 2026</td><td style="text-align:right">55%</td><td style="text-align:right">10%</td><td>S3 complete</td></tr>
+        <tr><td>15 May 2026</td><td style="text-align:right">68%</td><td style="text-align:right">13%</td><td>S4+S7+S9 partial</td></tr>
+        <tr><td>1 Jun 2026</td><td style="text-align:right">85%</td><td style="text-align:right">17%</td><td>S4+S5+S7 complete</td></tr>
+        <tr><td>15 Jun 2026</td><td style="text-align:right">90%</td><td style="text-align:right">5%</td><td>Tail of S4/S5/S7</td></tr>
+        <tr><td>1 Sep 2026</td><td style="text-align:right">95%</td><td style="text-align:right">5%</td><td>S6 partial</td></tr>
+        <tr><td>1 Jan 2027</td><td style="text-align:right">98%</td><td style="text-align:right">3%</td><td>Most scenarios resolved</td></tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin-top:0.5rem;">
+      <em>Window probability = chance law takes effect in that specific interval. Cumulative = total chance law is in force by that date.</em>
+    </p>
+
+    <!-- KEY CHANGES -->
+    <h2>What Changes</h2>
+
+    <div class="changes-grid">
+      <div class="change-card">
+        <div class="change-title">Residency for Naturalization</div>
+        <div class="old-new">
+          <span class="old">Old: 5 years</span><br>
+          <span class="new">New: 10 years (7 for EU/CPLP)</span>
+        </div>
+      </div>
+      <div class="change-card">
+        <div class="change-title">Residency Clock Starts</div>
+        <div class="old-new">
+          <span class="old">Old: from application date</span><br>
+          <span class="new">New: from first residence card issuance</span>
+        </div>
+      </div>
+      <div class="change-card">
+        <div class="change-title">Ancestry-Based Naturalization</div>
+        <div class="old-new">
+          <span class="old">Old: broader access</span><br>
+          <span class="new">New: limited to great-grandchildren</span>
+        </div>
+      </div>
+      <div class="change-card">
+        <div class="change-title">Integration Requirements</div>
+        <div class="old-new">
+          <span class="old">Old: language knowledge</span><br>
+          <span class="new">New: language + culture + democratic values test + solemn declaration</span>
+        </div>
+      </div>
+      <div class="change-card">
+        <div class="change-title">Children of Foreigners Born in PT</div>
+        <div class="old-new">
+          <span class="old">Old: parents with legal residence</span><br>
+          <span class="new">New: parents must have 3 years legal residence</span>
+        </div>
+      </div>
+      <div class="change-card">
+        <div class="change-title">Sephardic Jewish Regime</div>
+        <div class="old-new">
+          <span class="old">Old: special naturalization pathway</span><br>
+          <span class="new">New: eliminated</span>
+        </div>
+      </div>
+      <div class="change-card">
+        <div class="change-title">Spouse of Portuguese Citizen</div>
+        <div class="old-new">
+          <span class="new">Essentially unchanged</span><br>
+          <span style="font-size:0.8rem;color:var(--muted)">3-year marriage rule remains. 6-year rule (no MP opposition) maintained. Civil partnerships now require judicial recognition.</span>
+        </div>
+      </div>
+      <div class="change-card">
+        <div class="change-title">Criminal Bars</div>
+        <div class="old-new">
+          <span class="old">Old: existed</span><br>
+          <span class="new">New: reinforced &mdash; 3+ year sentences bar naturalization</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="note warning">
+      <strong>No transitional protections.</strong> The approved law includes no grandfathering clause. Applications filed before the law takes effect will be assessed under the old rules (per TC 1133/2025 precedent), but new applications filed after enforcement will face the new requirements.
+    </div>
+
+    <!-- SIGNALS -->
+    <h2>Key Signals to Monitor</h2>
+
+    <div class="signal-card">
+      <div class="signal-name">Redacao final published</div>
+      <div class="signal-meaning">Decree text finalized, ready to send to President</div>
+      <a href="https://www.parlamento.pt/ActividadeParlamentar/Paginas/DetalheIniciativa.aspx?BID=315160" target="_blank" rel="noopener">parlamento.pt &rarr; Iniciativa BID=315160</a>
+    </div>
+    <div class="signal-card">
+      <div class="signal-name">Decree sent to Belem</div>
+      <div class="signal-meaning">President's clock starts (8d fiscalizacao / 20d promulgation)</div>
+      <a href="https://www.presidencia.pt/atualidade/toda-a-atualidade/" target="_blank" rel="noopener">presidencia.pt</a>
+    </div>
+    <div class="signal-card">
+      <div class="signal-name">PS fiscalizacao request</div>
+      <div class="signal-meaning">Now unlikely for nationality law (PS says issues "resolved"). Watch for Penal Code decree only.</div>
+      <a href="https://ps.pt/" target="_blank" rel="noopener">ps.pt</a>
+    </div>
+    <div class="signal-card">
+      <div class="signal-name">President announces decision</div>
+      <div class="signal-meaning">Promulgation / veto / TC referral</div>
+      <a href="https://www.presidencia.pt/atualidade/toda-a-atualidade/" target="_blank" rel="noopener">presidencia.pt</a>
+    </div>
+    <div class="signal-card">
+      <div class="signal-name">TC registers case</div>
+      <div class="signal-meaning">Confirms fiscalizacao, 25-day clock starts</div>
+      <a href="https://www.tribunalconstitucional.pt/tc/acordaos/" target="_blank" rel="noopener">tribunalconstitucional.pt</a>
+    </div>
+    <div class="signal-card">
+      <div class="signal-name">DR publication</div>
+      <div class="signal-meaning"><strong>LAW IN FORCE next day.</strong> This is the final signal.</div>
+      <a href="https://diariodarepublica.pt/dr/pesquisa#q=lei+da+nacionalidade" target="_blank" rel="noopener">diariodarepublica.pt</a>
+    </div>
+
+    <!-- PRECEDENT -->
+    <h2>Precedent: Oct 2025 Round</h2>
+
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:0.75rem;">The first round of this exact law provides calibration data:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Step</th>
+          <th>Date</th>
+          <th style="text-align:right">Days from Vote</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Vote in plenary</td><td>28 Oct 2025</td><td style="text-align:right">0</td></tr>
+        <tr><td>Decrees sent to Belem</td><td>11 Nov 2025</td><td style="text-align:right">14</td></tr>
+        <tr><td>PS files fiscalizacao</td><td>18&ndash;19 Nov 2025</td><td style="text-align:right">21&ndash;22</td></tr>
+        <tr><td>TC ruling (Acordao 1133/2025)</td><td>15 Dec 2025</td><td style="text-align:right">48</td></tr>
+        <tr><td>President veto (after TC rejection)</td><td>19 Dec 2025</td><td style="text-align:right">52</td></tr>
+        <tr><td>Published in DR</td><td>5 Jan 2026</td><td style="text-align:right">69</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      If the same pace applies: Decree at Belem ~15 Apr, PS fiscalizacao (if filed) ~23 Apr, TC ruling ~late May, law in force (if TC approves) ~early June. However, PS has signaled they <strong>won't</strong> challenge the nationality law this time.
+    </div>
+
+    <!-- UPDATE LOG -->
+    <h2>Update Log</h2>
+
+    <div class="update-log-entry">
+      <div class="log-date">3 April 2026</div>
+      <div class="log-text">
+        <strong>Key finding:</strong> Pedro Delgado Alves (PS vice-leader) stated nationality law constitutional issues are "resolved" (1 Apr, 21:02). PS evaluating fiscalizacao ONLY for Penal Code decree (loss of nationality). Two decrees are separate &mdash; nationality law can proceed independently. TC shows no new April cases. Presidencia.pt: no nationality actions.
+      </div>
+      <div class="log-shift" style="color:var(--green);">Probability shift: faster track. S2+S3 up from 30% &rarr; 50%. S4&ndash;S6 down from 55% &rarr; 20%.</div>
+    </div>
+    <div class="update-log-entry">
+      <div class="log-date">2 April 2026, 23:30</div>
+      <div class="log-text">No status change. Decree still with Parliament services. Legal expert J.P. Goncalves: "if unchallenged, likely in force May 2026." Residency clock starts from first residence card issuance, not application date.</div>
+      <div class="log-shift" style="color:var(--muted);">No shift.</div>
+    </div>
+    <div class="update-log-entry">
+      <div class="log-date">2 April 2026, 18:00</div>
+      <div class="log-text">Initial tracker created. Redacao final in progress. No decree at Belem. PS "evaluating" fiscalizacao.</div>
+      <div class="log-shift" style="color:var(--muted);">Baseline established.</div>
+    </div>
+    <div class="update-log-entry">
+      <div class="log-date">1 April 2026</div>
+      <div class="log-text">Parliament approves nationality law revision 152&ndash;64&ndash;1.</div>
+      <div class="log-shift" style="color:var(--accent);">Clock starts.</div>
+    </div>
+
+    <!-- SOURCES -->
+    <h2>Sources</h2>
+
+    <ul class="source-list">
+      <li>
+        <a href="https://www.parlamento.pt/ActividadeParlamentar/Paginas/DetalheIniciativa.aspx?BID=315160" target="_blank" rel="noopener">Parliament Initiative Page</a>
+        <div class="source-desc">All phases, votes, documents</div>
+      </li>
+      <li>
+        <a href="https://www.noticiasaominuto.com/politica/2966175/ps-admite-pedir-fiscalizacao-do-tc-sobre-perda-de-nacionalidade" target="_blank" rel="noopener">Noticias ao Minuto (1 Apr)</a>
+        <div class="source-desc">KEY: PS says nationality law issues "resolved", evaluating TC only for Penal Code</div>
+      </li>
+      <li>
+        <a href="https://eco.sapo.pt/2026/04/01/direita-une-se-e-da-luz-verde-a-nova-lei-da-nacionalidade/" target="_blank" rel="noopener">ECO (1 Apr)</a>
+        <div class="source-desc">Vote details, PSD-Chega deal, next steps</div>
+      </li>
+      <li>
+        <a href="https://www.imidaily.com/europe/portugal-approves-nationality-law-decree-after-psd-chega-deal-no-transitional-protections/" target="_blank" rel="noopener">IMI Daily (2 Apr)</a>
+        <div class="source-desc">No transitional protections confirmed</div>
+      </li>
+      <li>
+        <a href="https://www.theportugalnews.com/news/2026-04-02/nationality-law-vote-confirms-extension-to-golden-visa-pathway-but-uncertainties-remain/1000307" target="_blank" rel="noopener">The Portugal News (2 Apr)</a>
+        <div class="source-desc">Legal expert timeline, no transitional protections</div>
+      </li>
+      <li>
+        <a href="https://www.idealista.pt/news/financas/economia/2026/04/02/74764-lei-da-nacionalidade-aprovada-com-votos-de-psd-chega-cds-e-il" target="_blank" rel="noopener">Idealista (2 Apr)</a>
+        <div class="source-desc">Confirms PS position on two separate decrees</div>
+      </li>
+      <li>
+        <a href="https://www.tribunalconstitucional.pt/tc/acordaos/20251133.html" target="_blank" rel="noopener">Acordao TC 1133/2025</a>
+        <div class="source-desc">Precedent TC ruling from Oct 2025 round</div>
+      </li>
+      <li>
+        <a href="https://www.pgdlisboa.pt/leis/lei_mostra_articulado.php?nid=4&tabela=leis" target="_blank" rel="noopener">Art. 278&ndash;279 CRP</a>
+        <div class="source-desc">Constitutional procedure for fiscalizacao preventiva</div>
+      </li>
+      <li>
+        <a href="https://jornaleconomico.sapo.pt/noticias/lei-da-nacionalidade-foi-muito-discutida-com-lideres-dos-paises-lusofonos-diz-ministro/" target="_blank" rel="noopener">Jornal Economico (2 Apr)</a>
+        <div class="source-desc">Minister confirms CPLP discussions</div>
+      </li>
+      <li>
+        <a href="https://bestcitizens.com/2026/04/02/portugal-approves-new-nationality-law-2026" target="_blank" rel="noopener">Best Citizenships (2 Apr)</a>
+        <div class="source-desc">Summary of changes, presidential options</div>
+      </li>
+      <li>
+        <a href="https://www.portugal.gov.pt/pt/gc25/comunicacao/noticia?i=governo-reforma-exigencia-nas-leis-de-nacionalidade-e-residencia" target="_blank" rel="noopener">Government &mdash; XXV Constitutional Government</a>
+        <div class="source-desc">Official summary of law changes</div>
+      </li>
+      <li>
+        <a href="https://www.lvpadvogados.com/reform-of-the-portuguese-nationality-law-understanding-the-new-rules" target="_blank" rel="noopener">LVP Advogados</a>
+        <div class="source-desc">Legal analysis of all pathways including spouse</div>
+      </li>
+    </ul>
+
+    <!-- DISCLAIMER -->
+    <div class="disclaimer">
+      <strong>Disclaimer.</strong> This tracker is maintained for informational purposes only and does not constitute legal advice. Probability estimates are based on constitutional procedure analysis and publicly available information. Consult a qualified immigration lawyer for decisions about your specific situation.
+    </div>
+
+    <footer>
+      <p>Built with public data from parlamento.pt, presidencia.pt, tribunalconstitucional.pt, and Portuguese media.</p>
+      <p style="margin-top:0.25rem;">
+        <a href="https://github.com/DmitriyG228/portugal-nationality-tracker">Source on GitHub</a>
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
