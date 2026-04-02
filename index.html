@@ -553,6 +553,29 @@
       color: var(--text-tertiary);
     }
 
+    .tier {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 0.15rem 0.35rem;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    .tier-1 { color: var(--green); border-color: rgba(0, 214, 114, 0.3); }
+    .tier-2 { color: var(--blue); border-color: rgba(71, 163, 255, 0.3); }
+    .tier-3 { color: var(--text-secondary); border-color: var(--border); }
+    .tier-4 { color: var(--text-tertiary); border-color: var(--border); }
+
+    .weight-bar {
+      display: inline-block;
+      height: 3px;
+      background: var(--text-tertiary);
+      vertical-align: middle;
+      margin-left: 0.4rem;
+    }
+
     /* ── FOOTER ── */
     footer {
       padding: 3rem 0;
@@ -599,7 +622,7 @@
       <div class="logo">lei-tracker <span>/</span> <span>nacionalidade</span></div>
       <div class="updated">
         <div class="pulse"></div>
-        3 Apr 2026, 15:00 UTC
+        3 Apr 2026, 18:30 UTC
       </div>
     </div>
   </nav>
@@ -1051,18 +1074,125 @@
 
     <!-- UPDATE LOG -->
     <section>
-      <h2>Update Log</h2>
+      <h2>Update Log &amp; Probability Trends</h2>
+      <p class="section-desc">How our probability estimates have evolved as new evidence emerges.</p>
 
+      <!-- PROBABILITY TREND CHART -->
+      <div style="border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;">
+        <div style="font-family:'Geist Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:1rem;">Scenario Group Trends</div>
+        <svg viewBox="0 0 400 160" style="width:100%;height:auto;" xmlns="http://www.w3.org/2000/svg">
+          <!-- Grid -->
+          <line x1="60" y1="10" x2="60" y2="130" stroke="#2a2a2a" stroke-width="0.5"/>
+          <line x1="60" y1="130" x2="380" y2="130" stroke="#2a2a2a" stroke-width="0.5"/>
+          <line x1="60" y1="70" x2="380" y2="70" stroke="#2a2a2a" stroke-width="0.5" stroke-dasharray="4,4"/>
+          <line x1="60" y1="10" x2="380" y2="10" stroke="#2a2a2a" stroke-width="0.5" stroke-dasharray="4,4"/>
+          <!-- Y axis labels -->
+          <text x="55" y="134" fill="#666" font-family="Geist Mono,monospace" font-size="8" text-anchor="end">0%</text>
+          <text x="55" y="74" fill="#666" font-family="Geist Mono,monospace" font-size="8" text-anchor="end">50%</text>
+          <text x="55" y="14" fill="#666" font-family="Geist Mono,monospace" font-size="8" text-anchor="end">100%</text>
+          <!-- X axis labels: dates -->
+          <text x="100" y="148" fill="#666" font-family="Geist Mono,monospace" font-size="7" text-anchor="middle">1 Apr</text>
+          <text x="200" y="148" fill="#666" font-family="Geist Mono,monospace" font-size="7" text-anchor="middle">2 Apr 18:00</text>
+          <text x="340" y="148" fill="#666" font-family="Geist Mono,monospace" font-size="7" text-anchor="middle">3 Apr</text>
+          <!-- S2+S3: Direct promulgation (green line) -->
+          <!-- 1 Apr: n/a, 2 Apr: 30%, 3 Apr: 50% -->
+          <polyline points="200,94 340,70" fill="none" stroke="#00d672" stroke-width="2"/>
+          <circle cx="200" cy="94" r="3" fill="#00d672"/>
+          <circle cx="340" cy="70" r="3" fill="#00d672"/>
+          <text x="345" y="66" fill="#00d672" font-family="Geist Mono,monospace" font-size="7">50%</text>
+          <!-- S4-S6: TC review (red line) -->
+          <!-- 1 Apr: n/a, 2 Apr: 55%, 3 Apr: 20% -->
+          <polyline points="200,64 340,106" fill="none" stroke="#ff4747" stroke-width="2"/>
+          <circle cx="200" cy="64" r="3" fill="#ff4747"/>
+          <circle cx="340" cy="106" r="3" fill="#ff4747"/>
+          <text x="345" y="110" fill="#ff4747" font-family="Geist Mono,monospace" font-size="7">20%</text>
+          <!-- S7: Political veto (amber line) -->
+          <!-- 1 Apr: n/a, 2 Apr: 5%, 3 Apr: 15% -->
+          <polyline points="200,124 340,112" fill="none" stroke="#ffb224" stroke-width="1.5"/>
+          <circle cx="200" cy="124" r="2.5" fill="#ffb224"/>
+          <circle cx="340" cy="112" r="2.5" fill="#ffb224"/>
+          <text x="345" y="116" fill="#ffb224" font-family="Geist Mono,monospace" font-size="7">15%</text>
+          <!-- Vote marker -->
+          <line x1="100" y1="10" x2="100" y2="130" stroke="#444" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <text x="100" y="8" fill="#666" font-family="Geist Mono,monospace" font-size="6" text-anchor="middle">VOTE</text>
+          <!-- Legend -->
+          <line x1="65" y1="155" x2="80" y2="155" stroke="#00d672" stroke-width="2"/>
+          <text x="83" y="158" fill="#a1a1a1" font-family="Geist Mono,monospace" font-size="7">S2+S3 Direct promulgation</text>
+          <line x1="215" y1="155" x2="230" y2="155" stroke="#ff4747" stroke-width="2"/>
+          <text x="233" y="158" fill="#a1a1a1" font-family="Geist Mono,monospace" font-size="7">S4-S6 TC review</text>
+          <line x1="310" y1="155" x2="325" y2="155" stroke="#ffb224" stroke-width="1.5"/>
+          <text x="328" y="158" fill="#a1a1a1" font-family="Geist Mono,monospace" font-size="7">S7 Veto</text>
+        </svg>
+      </div>
+
+      <!-- PROBABILITY SNAPSHOT TABLE -->
+      <table style="margin-bottom:1.5rem;">
+        <thead>
+          <tr>
+            <th>Scenario Group</th>
+            <th class="r">2 Apr (v1)</th>
+            <th class="r">3 Apr (v2)</th>
+            <th class="r">&Delta;</th>
+            <th>Trigger</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>S1: Lightning</td>
+            <td class="r mono">5%</td>
+            <td class="r mono">5%</td>
+            <td class="r mono" style="color:var(--text-tertiary)">&mdash;</td>
+            <td style="color:var(--text-tertiary)">No change</td>
+          </tr>
+          <tr>
+            <td>S2+S3: Direct promulgation</td>
+            <td class="r mono">30%</td>
+            <td class="r mono" style="color:var(--green)">50%</td>
+            <td class="r mono" style="color:var(--green)">+20</td>
+            <td>PS says nationality law issues "resolved"<a href="#src-nam" class="sup">[NAM]</a></td>
+          </tr>
+          <tr>
+            <td>S4&ndash;S6: TC review</td>
+            <td class="r mono">55%</td>
+            <td class="r mono" style="color:var(--red)">20%</td>
+            <td class="r mono" style="color:var(--red)">&minus;35</td>
+            <td>PS won't challenge nationality law at TC<a href="#src-nam" class="sup">[NAM]</a></td>
+          </tr>
+          <tr>
+            <td>S7: Political veto &rarr; override</td>
+            <td class="r mono">5%</td>
+            <td class="r mono" style="color:var(--amber)">15%</td>
+            <td class="r mono" style="color:var(--amber)">+10</td>
+            <td>Seguro (PS) voted against; veto possible but overridable</td>
+          </tr>
+          <tr>
+            <td>S8: PS reversal</td>
+            <td class="r mono">5%</td>
+            <td class="r mono">2%</td>
+            <td class="r mono" style="color:var(--green)">&minus;3</td>
+            <td>Explicit PS statement makes reversal unlikely</td>
+          </tr>
+          <tr>
+            <td>S9: Seguro delays</td>
+            <td class="r mono">&mdash;</td>
+            <td class="r mono">8%</td>
+            <td class="r mono" style="color:var(--text-tertiary)">new</td>
+            <td>New scenario: Seguro runs clock while Penal Code resolves</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- LOG ENTRIES -->
       <div class="log-entry">
         <div class="log-date">3 April 2026</div>
         <div class="log-text">
-          <strong>Key finding:</strong> Pedro Delgado Alves (PS vice-leader) stated nationality law constitutional issues are "resolved".<a href="#src-nam" class="sup">[3]</a> PS evaluating fiscalizacao ONLY for Penal Code decree (loss of nationality). Two decrees are separate &mdash; nationality law can proceed independently. TC shows no new April cases. Presidencia.pt: no nationality actions.<a href="#src-presidencia" class="sup">[2]</a>
+          <strong>Key finding:</strong> Pedro Delgado Alves (PS vice-leader) stated nationality law constitutional issues are "resolved".<a href="#src-nam" class="sup">[NAM]</a> PS evaluating fiscalizacao ONLY for Penal Code decree (loss of nationality). Two decrees are separate &mdash; nationality law can proceed independently. TC shows no new April cases. Presidencia.pt: no nationality actions.<a href="#src-presidencia" class="sup">[PRES]</a>
         </div>
-        <div class="log-shift" style="color:var(--green);">S2+S3 up from 30% &rarr; 50%. S4&ndash;S6 down from 55% &rarr; 20%.</div>
+        <div class="log-shift" style="color:var(--green);">Major shift &uarr; faster. Direct promulgation 30% &rarr; 50%. TC review 55% &rarr; 20%.</div>
       </div>
       <div class="log-entry">
         <div class="log-date">2 April 2026, 23:30</div>
-        <div class="log-text">No status change. Decree still with Parliament services. Legal expert J.P. Goncalves: "if unchallenged, likely in force May 2026."<a href="#src-tpn" class="sup">[8]</a> Residency clock starts from first residence card issuance, not application date.</div>
+        <div class="log-text">No status change. Decree still with Parliament services. Legal expert J.P. Goncalves: "if unchallenged, likely in force May 2026."<a href="#src-tpn" class="sup">[TPN]</a> Residency clock starts from first residence card issuance, not application date.</div>
         <div class="log-shift" style="color:var(--text-tertiary);">No shift.</div>
       </div>
       <div class="log-entry">
@@ -1072,7 +1202,7 @@
       </div>
       <div class="log-entry">
         <div class="log-date">1 April 2026</div>
-        <div class="log-text">Parliament approves nationality law revision 152&ndash;64&ndash;1.<a href="#src-eco" class="sup">[1]</a></div>
+        <div class="log-text">Parliament approves nationality law revision 152&ndash;64&ndash;1.<a href="#src-eco" class="sup">[ECO]</a></div>
         <div class="log-shift" style="color:var(--amber);">Clock starts.</div>
       </div>
     </section>
@@ -1080,12 +1210,21 @@
     <!-- SOURCES -->
     <section id="sources">
       <h2>Sources &amp; Evidence</h2>
-      <p class="section-desc">Every claim on this page is backed by a specific source. Original Portuguese quotes included with translations.</p>
+      <p class="section-desc">Every claim is backed by a specific source. Sorted by authority tier. Weight reflects how much the tracker relies on each source for its conclusions.</p>
+
+      <div class="callout" style="margin-bottom:1.5rem;">
+        <strong>Authority tiers.</strong>
+        <span class="tier tier-1">T1</span> Official / Legal &mdash; government, parliament, courts, constitutional text.
+        <span class="tier tier-2">T2</span> Quality journalism &mdash; established Portuguese newsrooms with parliamentary reporters.
+        <span class="tier tier-3">T3</span> Specialist media &mdash; immigration-focused outlets and law firms.
+        <span class="tier tier-4">T4</span> Aggregators &mdash; summaries and overviews, useful for corroboration.
+      </div>
 
       <table class="source-table">
         <thead>
           <tr>
-            <th>#</th>
+            <th>Tier</th>
+            <th>Wt</th>
             <th>Source</th>
             <th>Date</th>
             <th>Key Quote &amp; Translation</th>
@@ -1093,27 +1232,63 @@
           </tr>
         </thead>
         <tbody>
-          <tr id="src-eco">
-            <td class="mono">1</td>
-            <td><a href="https://eco.sapo.pt/2026/04/01/direita-une-se-e-da-luz-verde-a-nova-lei-da-nacionalidade/" target="_blank" rel="noopener">ECO</a></td>
-            <td class="mono" style="white-space:nowrap">1 Apr 2026</td>
+          <!-- ═══ TIER 1: OFFICIAL / LEGAL ═══ -->
+          <tr id="src-parlamento">
+            <td><span class="tier tier-1">T1</span></td>
+            <td class="mono r">10</td>
+            <td><a href="https://www.parlamento.pt/ActividadeParlamentar/Paginas/DetalheIniciativa.aspx?BID=315160" target="_blank" rel="noopener">Parlamento.pt</a></td>
+            <td class="mono" style="white-space:nowrap">Ongoing</td>
             <td>
-              <div class="quote">"Foram 152 votos a favor (PSD, Chega, IL e CDS-PP) e 64 contra (PS, Livre, PCP, BE e PAN), com uma abstencao do JPP"</div>
-              <div class="translation">152 votes in favor (PSD, Chega, IL, CDS-PP) and 64 against (PS, Livre, PCP, BE, PAN), with one JPP abstention</div>
+              <div class="translation">Official initiative page BID=315160. Tracks all phases from proposal through redacao final to decree delivery. Primary pipeline source.</div>
             </td>
-            <td class="relevance">Vote result, party breakdown, PSD-Chega deal. Confirms absolute majority (152&gt;116) for organic law.</td>
+            <td class="relevance">Canonical pipeline status. Redacao final + decree delivery will appear here first. Oct 2025 round: 14-day redacao final.</td>
+          </tr>
+          <tr id="src-tc">
+            <td><span class="tier tier-1">T1</span></td>
+            <td class="mono r">10</td>
+            <td><a href="https://www.tribunalconstitucional.pt/tc/acordaos/20251133.html" target="_blank" rel="noopener">Acordao TC 1133/2025</a></td>
+            <td class="mono" style="white-space:nowrap">15 Dec 2025</td>
+            <td>
+              <div class="translation">Constitutional Court ruled 4 provisions unconstitutional. Key precedent: applications filed under old law assessed under old rules.</div>
+            </td>
+            <td class="relevance">Binding precedent. Establishes Oct 2025 round timeline (14d redacao final, 48d to ruling). Legal principle protecting pre-enforcement applications.</td>
+          </tr>
+          <tr id="src-crp">
+            <td><span class="tier tier-1">T1</span></td>
+            <td class="mono r">10</td>
+            <td><a href="https://www.pgdlisboa.pt/leis/lei_mostra_articulado.php?nid=4&tabela=leis" target="_blank" rel="noopener">Art. 278&ndash;279 CRP</a></td>
+            <td class="mono" style="white-space:nowrap">Constitutional</td>
+            <td>
+              <div class="translation">Constitutional articles governing fiscalizacao preventiva, presidential promulgation timelines, TC review process.</div>
+            </td>
+            <td class="relevance">Immutable legal basis for ALL pipeline timelines: 8-day fiscalizacao window, 20-day promulgation deadline, 25-day TC review.</td>
           </tr>
           <tr id="src-presidencia">
-            <td class="mono">2</td>
+            <td><span class="tier tier-1">T1</span></td>
+            <td class="mono r">9</td>
             <td><a href="https://www.presidencia.pt/atualidade/toda-a-atualidade/" target="_blank" rel="noopener">Presidencia.pt</a></td>
             <td class="mono" style="white-space:nowrap">3 Apr 2026</td>
             <td>
-              <div class="translation">Presidency news page shows unrelated promulgations (IRS diplomas, Constitution anniversary). No nationality-related items.</div>
+              <div class="translation">Presidency news page shows only unrelated promulgations (IRS diplomas, Constitution anniversary). No nationality items.</div>
             </td>
-            <td class="relevance">Confirms decree has NOT been delivered to President. Clock not started.</td>
+            <td class="relevance">Negative evidence: decree NOT delivered to President. Clock not started. Checked directly on official site.</td>
           </tr>
+          <tr id="src-gov">
+            <td><span class="tier tier-1">T1</span></td>
+            <td class="mono r">8</td>
+            <td><a href="https://www.portugal.gov.pt/pt/gc25/comunicacao/noticia?i=governo-reforma-exigencia-nas-leis-de-nacionalidade-e-residencia" target="_blank" rel="noopener">Government (XXV)</a></td>
+            <td class="mono" style="white-space:nowrap">2026</td>
+            <td>
+              <div class="quote">"Assegurar maior tempo de integracao para aquisicao da nacionalidade"</div>
+              <div class="translation">"Ensure longer integration time for nationality acquisition"</div>
+            </td>
+            <td class="relevance">Official summary of all changes: 7/10yr residency, ancestry limits, Sephardic elimination, integration tests, criminal bars. Does NOT mention spouse pathway.</td>
+          </tr>
+
+          <!-- ═══ TIER 2: QUALITY JOURNALISM ═══ -->
           <tr id="src-nam">
-            <td class="mono">3</td>
+            <td><span class="tier tier-2">T2</span></td>
+            <td class="mono r">9</td>
             <td><a href="https://www.noticiasaominuto.com/politica/2966175/ps-admite-pedir-fiscalizacao-do-tc-sobre-perda-de-nacionalidade" target="_blank" rel="noopener">Noticias ao Minuto</a></td>
             <td class="mono" style="white-space:nowrap">1 Apr 2026 21:02</td>
             <td>
@@ -1121,111 +1296,96 @@
               <div class="translation">"Regarding the nationality law, the unconstitutionality issues have been resolved"</div>
               <div style="margin-top:0.3rem">
                 <div class="quote">"Nao esta ainda tomada uma decisao" [re Penal Code]</div>
-                <div class="translation">"A decision has not yet been made" [regarding the Penal Code decree]</div>
+                <div class="translation">"A decision has not yet been made" [re Penal Code decree]</div>
               </div>
             </td>
-            <td class="relevance"><strong>KEY SOURCE.</strong> Pedro Delgado Alves (PS vice-leader) confirms PS will NOT challenge the nationality law at TC. Only evaluating fiscalizacao for Penal Code decree. Biggest single probability shift in the tracker.</td>
+            <td class="relevance"><strong>KEY SOURCE.</strong> Direct quote from Pedro Delgado Alves (PS vice-leader). PS won't challenge nationality law at TC. Evaluating only Penal Code decree. Biggest probability shift in tracker. Weight 9: direct quote from named official, but single-source (not yet corroborated by PS.pt).</td>
+          </tr>
+          <tr id="src-eco">
+            <td><span class="tier tier-2">T2</span></td>
+            <td class="mono r">8</td>
+            <td><a href="https://eco.sapo.pt/2026/04/01/direita-une-se-e-da-luz-verde-a-nova-lei-da-nacionalidade/" target="_blank" rel="noopener">ECO</a></td>
+            <td class="mono" style="white-space:nowrap">1 Apr 2026</td>
+            <td>
+              <div class="quote">"Foram 152 votos a favor (PSD, Chega, IL e CDS-PP) e 64 contra (PS, Livre, PCP, BE e PAN), com uma abstencao do JPP"</div>
+              <div class="translation">152 votes in favor and 64 against, with one JPP abstention</div>
+            </td>
+            <td class="relevance">Vote result, party breakdown, PSD-Chega deal. Confirms absolute majority (152&gt;116) for organic law. ECO is established Portuguese business news.</td>
+          </tr>
+          <tr id="src-observador">
+            <td><span class="tier tier-2">T2</span></td>
+            <td class="mono r">6</td>
+            <td><a href="https://observador.pt/especiais/direita-aprovou-nova-lei-da-nacionalidade-mas-risco-de-ir-parar-ao-tribunal-constitucional-mantem-se/" target="_blank" rel="noopener">Observador</a></td>
+            <td class="mono" style="white-space:nowrap">1 Apr 2026</td>
+            <td>
+              <div class="translation">Title: "Right approved the nationality law, but risk of going to Constitutional Court remains"</div>
+            </td>
+            <td class="relevance">Paywalled &mdash; only headline accessible. Likely refers to Penal Code decree (per [NAM], PS says nationality law resolved). Weight reduced: cannot verify full content.</td>
           </tr>
           <tr id="src-idealista">
-            <td class="mono">4</td>
+            <td><span class="tier tier-2">T2</span></td>
+            <td class="mono r">6</td>
             <td><a href="https://www.idealista.pt/news/financas/economia/2026/04/02/74764-lei-da-nacionalidade-aprovada-com-votos-de-psd-chega-cds-e-il" target="_blank" rel="noopener">Idealista</a></td>
             <td class="mono" style="white-space:nowrap">2 Apr 2026</td>
             <td>
-              <div class="translation">Confirms two separate decrees: (1) Nationality Law revision and (2) Penal Code amendment for loss of nationality. Repeats PS position on separate treatment.</div>
+              <div class="translation">Confirms two separate decrees: (1) Nationality Law revision and (2) Penal Code amendment. Repeats PS position on separate treatment.</div>
             </td>
-            <td class="relevance">Establishes that nationality law and Penal Code decree are separate instruments that can proceed independently through presidential review.</td>
+            <td class="relevance">Corroborates NAM [3] on two-decree separation. Establishes that nationality law can proceed independently. Idealista is established real-estate/news platform.</td>
           </tr>
-          <tr id="src-parlamento">
-            <td class="mono">5</td>
-            <td><a href="https://www.parlamento.pt/ActividadeParlamentar/Paginas/DetalheIniciativa.aspx?BID=315160" target="_blank" rel="noopener">Parlamento.pt</a></td>
-            <td class="mono" style="white-space:nowrap">Ongoing</td>
+          <tr>
+            <td><span class="tier tier-2">T2</span></td>
+            <td class="mono r">5</td>
+            <td><a href="https://jornaleconomico.sapo.pt/noticias/lei-da-nacionalidade-foi-muito-discutida-com-lideres-dos-paises-lusofonos-diz-ministro/" target="_blank" rel="noopener">Jornal Economico</a></td>
+            <td class="mono" style="white-space:nowrap">2 Apr 2026</td>
             <td>
-              <div class="translation">Official initiative page for BID=315160. Tracks all phases from proposal through redacao final to decree delivery. Primary source for pipeline status.</div>
+              <div class="translation">Minister of Presidency: law was "extensively discussed with leaders of Portuguese-speaking countries" who "fully understood its importance."</div>
             </td>
-            <td class="relevance">Canonical pipeline status. Redacao final completion and decree delivery will appear here first. Oct 2025 round showed 14-day redacao final period.</td>
+            <td class="relevance">Political signal: government confident, CPLP briefed. Lower weight: minister statement (expected), not new factual information.</td>
           </tr>
-          <tr id="src-gov">
-            <td class="mono">6</td>
-            <td><a href="https://www.portugal.gov.pt/pt/gc25/comunicacao/noticia?i=governo-reforma-exigencia-nas-leis-de-nacionalidade-e-residencia" target="_blank" rel="noopener">Government (XXV)</a></td>
-            <td class="mono" style="white-space:nowrap">2026</td>
+
+          <!-- ═══ TIER 3: SPECIALIST MEDIA ═══ -->
+          <tr id="src-imi">
+            <td><span class="tier tier-3">T3</span></td>
+            <td class="mono r">7</td>
+            <td><a href="https://www.imidaily.com/europe/portugal-approves-nationality-law-decree-after-psd-chega-deal-no-transitional-protections/" target="_blank" rel="noopener">IMI Daily</a></td>
+            <td class="mono" style="white-space:nowrap">2 Apr 2026</td>
             <td>
-              <div class="quote">"Assegurar maior tempo de integracao para aquisicao da nacionalidade"</div>
-              <div class="translation">"Ensure longer integration time for nationality acquisition"</div>
+              <div class="translation">Title: "Portugal Approves Nationality Law Decree After PSD-Chega Deal, No Transitional Protections"</div>
             </td>
-            <td class="relevance">Official government summary. Lists all major changes: 7/10yr residency, ancestry limits, Sephardic elimination, integration tests, criminal bars. Does NOT mention spouse pathway changes.</td>
+            <td class="relevance">Specialist immigration outlet. Key finding: no grandfathering clause. PSD-Chega deal excluded PS-proposed transitions. Higher weight for specialist expertise.</td>
+          </tr>
+          <tr id="src-tpn">
+            <td><span class="tier tier-3">T3</span></td>
+            <td class="mono r">7</td>
+            <td><a href="https://www.theportugalnews.com/news/2026-04-02/nationality-law-vote-confirms-extension-to-golden-visa-pathway-but-uncertainties-remain/1000307" target="_blank" rel="noopener">The Portugal News</a></td>
+            <td class="mono" style="white-space:nowrap">2 Apr 2026</td>
+            <td>
+              <div class="quote">"The minimum legal residency period will no longer be counted from the date of submission of the residence permit application, but from the date of the issuing of the first residence card"</div>
+            </td>
+            <td class="relevance">Key detail: residency clock change. Legal expert J.P. Goncalves: "if unchallenged, likely in force May 2026." Confirms no transitional protections.</td>
           </tr>
           <tr id="src-lvp">
-            <td class="mono">7</td>
+            <td><span class="tier tier-3">T3</span></td>
+            <td class="mono r">7</td>
             <td><a href="https://www.lvpadvogados.com/reform-of-the-portuguese-nationality-law-understanding-the-new-rules" target="_blank" rel="noopener">LVP Advogados</a></td>
             <td class="mono" style="white-space:nowrap">2026</td>
             <td>
               <div class="quote">"Nationality may be granted after three years of marriage to a Portuguese citizen"</div>
               <div class="translation">(Originally in English)</div>
             </td>
-            <td class="relevance">Legal analysis confirming spouse pathway (Art. 3) unchanged. 3-year marriage rule persists. 6-year MP non-opposition rule maintained. Civil partnerships now need judicial recognition.</td>
+            <td class="relevance">Portuguese law firm specializing in nationality. Confirms spouse pathway (Art. 3) unchanged: 3yr marriage, 6yr MP non-opposition. Civil partnerships now need judicial recognition.</td>
           </tr>
-          <tr id="src-tpn">
-            <td class="mono">8</td>
-            <td><a href="https://www.theportugalnews.com/news/2026-04-02/nationality-law-vote-confirms-extension-to-golden-visa-pathway-but-uncertainties-remain/1000307" target="_blank" rel="noopener">The Portugal News</a></td>
-            <td class="mono" style="white-space:nowrap">2 Apr 2026</td>
-            <td>
-              <div class="quote">"The minimum legal residency period will no longer be counted from the date of submission of the residence permit application, but from the date of the issuing of the first residence card"</div>
-            </td>
-            <td class="relevance">Key detail on residency clock change. Also: legal expert J.P. Goncalves says "if unchallenged, likely in force May 2026." Confirms no transitional protections.</td>
-          </tr>
-          <tr id="src-imi">
-            <td class="mono">9</td>
-            <td><a href="https://www.imidaily.com/europe/portugal-approves-nationality-law-decree-after-psd-chega-deal-no-transitional-protections/" target="_blank" rel="noopener">IMI Daily</a></td>
-            <td class="mono" style="white-space:nowrap">2 Apr 2026</td>
-            <td>
-              <div class="translation">Title: "Portugal Approves Nationality Law Decree After PSD-Chega Deal, No Transitional Protections"</div>
-            </td>
-            <td class="relevance">Confirms no grandfathering clause. PSD-Chega deal excluded PS-proposed transitional protections. Applications after enforcement face new rules immediately.</td>
-          </tr>
-          <tr id="src-tc">
-            <td class="mono">10</td>
-            <td><a href="https://www.tribunalconstitucional.pt/tc/acordaos/20251133.html" target="_blank" rel="noopener">Acordao TC 1133/2025</a></td>
-            <td class="mono" style="white-space:nowrap">15 Dec 2025</td>
-            <td>
-              <div class="translation">Constitutional Court ruled 4 provisions unconstitutional. Key precedent: applications filed under old law are assessed under old rules, protecting pending applicants.</div>
-            </td>
-            <td class="relevance">Precedent for Oct 2025 round timeline (14d redacao final, 48d to TC ruling). Also establishes legal principle protecting applications filed before enforcement.</td>
-          </tr>
+
+          <!-- ═══ TIER 4: AGGREGATORS ═══ -->
           <tr>
-            <td class="mono">11</td>
-            <td><a href="https://jornaleconomico.sapo.pt/noticias/lei-da-nacionalidade-foi-muito-discutida-com-lideres-dos-paises-lusofonos-diz-ministro/" target="_blank" rel="noopener">Jornal Economico</a></td>
-            <td class="mono" style="white-space:nowrap">2 Apr 2026</td>
-            <td>
-              <div class="translation">Minister of Presidency says law was "extensively discussed with leaders of Portuguese-speaking countries" who "fully understood its importance."</div>
-            </td>
-            <td class="relevance">Political signal: government confident law will stick. CPLP leaders briefed, reducing risk of diplomatic backlash forcing changes.</td>
-          </tr>
-          <tr>
-            <td class="mono">12</td>
+            <td><span class="tier tier-4">T4</span></td>
+            <td class="mono r">4</td>
             <td><a href="https://bestcitizens.com/2026/04/02/portugal-approves-new-nationality-law-2026" target="_blank" rel="noopener">Best Citizenships</a></td>
             <td class="mono" style="white-space:nowrap">2 Apr 2026</td>
             <td>
-              <div class="translation">Summary of changes and presidential options (promulgate, veto, or refer to TC). Pending citizenship applications won't be affected.</div>
+              <div class="translation">Summary of changes and presidential options. Pending citizenship applications won't be affected.</div>
             </td>
-            <td class="relevance">Corroborates TC 1133/2025 principle: existing applications protected. Useful overview of presidential decision tree.</td>
-          </tr>
-          <tr>
-            <td class="mono">13</td>
-            <td><a href="https://www.pgdlisboa.pt/leis/lei_mostra_articulado.php?nid=4&tabela=leis" target="_blank" rel="noopener">Art. 278&ndash;279 CRP</a></td>
-            <td class="mono" style="white-space:nowrap">Constitutional</td>
-            <td>
-              <div class="translation">Constitutional articles governing fiscalizacao preventiva procedure, presidential promulgation timelines, and TC review process.</div>
-            </td>
-            <td class="relevance">Legal basis for all pipeline timelines: 8-day fiscalizacao window, 20-day promulgation deadline, 25-day TC review period.</td>
-          </tr>
-          <tr>
-            <td class="mono">14</td>
-            <td><a href="https://observador.pt/especiais/direita-aprovou-nova-lei-da-nacionalidade-mas-risco-de-ir-parar-ao-tribunal-constitucional-mantem-se/" target="_blank" rel="noopener">Observador</a></td>
-            <td class="mono" style="white-space:nowrap">1 Apr 2026</td>
-            <td>
-              <div class="translation">Title: "Right approved the nationality law, but risk of going to Constitutional Court remains"</div>
-            </td>
-            <td class="relevance">Paywalled. Headline likely refers to Penal Code decree (per [3], PS says nationality law issues resolved). Context for S4&ndash;S8 scenarios.</td>
+            <td class="relevance">Corroborates TC 1133/2025 principle. Useful overview but no original reporting. Lower weight: aggregator citing other sources.</td>
           </tr>
         </tbody>
       </table>
